@@ -107,7 +107,6 @@ import { AiSidebar, readAiSidebarOpen, writeAiSidebarOpen } from "./ai-sidebar/A
 import { AiSidebarErrorBoundary } from "./ai-sidebar/AiSidebarErrorBoundary";
 import { getNotebookMoveOptions } from "@/lib/app-helpers";
 import { parseTagsText } from "@/lib/utils";
-import { prefersChineseContent } from "@/lib/bilingual-content-locale";
 
 const artwork = (document: PosterDocument) =>
   JSON.stringify({ ...document, previewResourceId: undefined });
@@ -142,7 +141,7 @@ export default function PosterEditorPane({
   companionAvailable = false, beforeCompanionApply, onCompanionNotesChanged,
 }: Props) {
   const { t, i18n } = useTranslation();
-  const zh = prefersChineseContent(i18n.language);
+  const zh = i18n.language.startsWith("zh");
   const initial = useMemo(
     () => parsePosterDocument(memo.contentMarkdown),
     [memo.contentMarkdown],
@@ -1219,7 +1218,7 @@ export default function PosterEditorPane({
     const value = current.current.document;
     setTemplateFontsLoading(true);
     try {
-      const built = await applyPosterDesign(value, id, zh, width, height, { title: t("poster.defaultHeading"), subtitle: t("poster.defaultSubtitle") });
+      const built = await applyPosterDesign(value, id, zh, width, height);
       return { ...built, platformId };
     } finally { setTemplateFontsLoading(false); }
   };

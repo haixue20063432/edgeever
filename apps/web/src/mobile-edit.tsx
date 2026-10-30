@@ -8,7 +8,7 @@ import { installEditorBodyFontFaces } from "@/lib/editor-body-font-faces";
 import { applyUiFontPreference } from "@/lib/ui-font";
 import { installPhoneImageFillStyle } from "@edgeever/shared/image-display";
 import { bootstrapI18n } from "@/i18n";
-import { errorScreenText as t } from "@/lib/error-screen-copy";
+import { defaultLocale, getBrowserLocale } from "@/i18n/locales";
 import "./styles/mobile-markdown-editor.css";
 import "./styles/editor-body-fonts.css";
 
@@ -50,19 +50,22 @@ class MobileEditorErrorBoundary extends React.Component<React.PropsWithChildren,
 
   override render() {
     if (!this.state.failed) return this.props.children;
+    const english = (getBrowserLocale() ?? defaultLocale) === "en-US";
     return (
       <main className="mobile-editor-fatal" role="alert">
         <section className="mobile-editor-fatal-card">
-          <h1>{t("editorTitle")}</h1>
+          <h1>{english ? "The editor encountered an error" : "编辑器出现异常"}</h1>
           <p>
-            {t("editorBody")}
+            {english
+              ? "Your note is safe. Retry the editor or return to the note list."
+              : "笔记内容是安全的。你可以重试打开编辑器，或先返回笔记列表。"}
           </p>
           <div className="mobile-editor-fatal-actions">
             <button type="button" onClick={returnToPreviousPage}>
-              {t("back")}
+              {english ? "Back" : "返回"}
             </button>
             <button className="primary" type="button" onClick={() => window.location.reload()}>
-              {t("retry")}
+              {english ? "Retry" : "重试"}
             </button>
           </div>
         </section>
